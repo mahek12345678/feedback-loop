@@ -10,7 +10,7 @@ export const AppLayout: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-surface-subtle flex flex-col items-center justify-center">
-        <div className="w-10 h-10 border-4 border-lavender-200 border-t-lavender-600 rounded-full animate-spin mb-4" />
+        <div className="w-10 h-10 border-4 border-[#CBD5E1] border-t-[#1769AA] rounded-full animate-spin mb-4" />
         <p className="text-sm font-medium text-ink-muted">Loading FeedbackLoop platform...</p>
       </div>
     );

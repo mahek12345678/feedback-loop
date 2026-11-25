@@ -277,6 +277,7 @@ class ResolutionVerification(Base):
     action_id = Column(Integer, ForeignKey("faculty_actions.id"), nullable=False)
     student_id_hash = Column(String(64), nullable=False) # Pseudonymized hash for 1-vote-per-student
     outcome = Column(SQLEnum(VerificationOutcome), nullable=False)
+    updated_understanding_rating = Column(Integer, nullable=True) # 1-5 updated understanding rating
     comment = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=utcnow)
     

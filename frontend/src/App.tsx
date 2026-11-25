@@ -46,13 +46,18 @@ export const App: React.FC = () => {
                 <Route path="student/history" element={<StudentHistory />} />
 
                 {/* Faculty Routes */}
-                <Route path="faculty" element={<FacultyDashboard />} />
-                <Route path="faculty/warnings" element={<FacultyDashboard />} />
-                <Route path="faculty/actions" element={<FacultyDashboard />} />
+                <Route path="faculty" element={<FacultyDashboard initialTab="overview" />} />
+                <Route path="faculty/feedback" element={<FacultyDashboard initialTab="feedback" />} />
+                <Route path="faculty/warnings" element={<FacultyDashboard initialTab="warnings" />} />
+                <Route path="faculty/recommendations" element={<FacultyDashboard initialTab="recommendations" />} />
+                <Route path="faculty/actions" element={<FacultyDashboard initialTab="actions" />} />
+                <Route path="faculty/reports" element={<FacultyDashboard initialTab="reports" />} />
 
                 {/* Admin Routes */}
-                <Route path="admin" element={<AdminDashboard />} />
-                <Route path="admin/courses" element={<AdminDashboard />} />
+                <Route path="admin" element={<AdminDashboard initialTab="overview" />} />
+                <Route path="admin/courses" element={<AdminDashboard initialTab="courses" />} />
+                <Route path="admin/alerts" element={<AdminDashboard initialTab="alerts" />} />
+                <Route path="admin/actions" element={<AdminDashboard initialTab="actions" />} />
               </Route>
 
               {/* Catch-all */}

@@ -149,7 +149,12 @@ export const actionsApi = {
 };
 
 export const verificationsApi = {
-  submit: async (data: { action_id: number; outcome: 'YES' | 'PARTIALLY' | 'NO'; comment?: string }) => {
+  submit: async (data: {
+    action_id: number;
+    outcome: 'YES' | 'PARTIALLY' | 'NO';
+    updated_understanding_rating?: number;
+    comment?: string;
+  }) => {
     const res = await apiClient.post('/verifications', data);
     return res.data;
   },

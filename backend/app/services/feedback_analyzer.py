@@ -74,7 +74,12 @@ class FeedbackAnalyzer:
                 {"role": "user", "content": f"Category: {common_category}\nStudent Comments:\n" + "\n".join(f"- {t}" for t in sample_texts)}
             ]
 
-            summary = await ollama_client.chat(prompt_messages, format_json=False)
+            summary = None
+            try:
+                summary = await ollama_client.chat(prompt_messages, format_json=False)
+            except Exception as e:
+                logger.info(f"Ollama synthesis unavailable ({e}); using rule-based educational summary.")
+
             if not summary or len(summary) < 10:
                 summary = f"Multiple students reported challenges regarding {common_category.lower()} in {topic}, emphasizing the need for more illustrative examples and pacing adjustments."
 

@@ -39,3 +39,45 @@ def test_login_invalid_password(client):
         "password": "WrongPassword"
     })
     assert bad_res.status_code == 401
+
+def test_role_authorization_guards(client):
+    """Verify role-based access control guards (students cannot access faculty endpoints and vice-versa)."""
+    # 1. Unauthenticated request to protected endpoint
+    unauth_res = client.get("/api/auth/me")
+    assert unauth_res.status_code in [401, 403]
+
+    # 2. Register student and faculty
+    client.post("/api/auth/register", json={
+        "email": "student_guard@feedbackloop.edu",
+        "password": "PassWord123!",
+        "full_name": "Guard Student",
+        "role": "STUDENT"
+    })
+    client.post("/api/auth/register", json={
+        "email": "faculty_guard@feedbackloop.edu",
+        "password": "PassWord123!",
+        "full_name": "Guard Faculty",
+        "role": "FACULTY"
+    })
+
+    student_token = client.post("/api/auth/login", json={"email": "student_guard@feedbackloop.edu", "password": "PassWord123!"}).json()["access_token"]
+    faculty_token = client.post("/api/auth/login", json={"email": "faculty_guard@feedbackloop.edu", "password": "PassWord123!"}).json()["access_token"]
+
+    # Student cannot create academic issue (faculty/admin only)
+    forbidden_issue = client.post("/api/actions/issues", json={
+        "course_id": 1,
+        "title": "Unauthorized Issue",
+        "topic": "Testing",
+        "category": "Teaching clarity",
+        "description": "Student shouldn't be allowed here"
+    }, headers={"Authorization": f"Bearer {student_token}"})
+    assert forbidden_issue.status_code == 403
+
+    # Faculty cannot submit student feedback
+    forbidden_feedback = client.post("/api/feedback/submit", json={
+        "opportunity_id": 1,
+        "category": "Lecture pace",
+        "rating": 3
+    }, headers={"Authorization": f"Bearer {faculty_token}"})
+    assert forbidden_feedback.status_code == 403
+

@@ -205,6 +205,7 @@ export interface VerificationSummary {
   partially_count: number;
   no_count: number;
   effectiveness_score: number;
+  avg_updated_understanding?: number;
   comments: string[];
 }
 

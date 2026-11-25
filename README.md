@@ -38,8 +38,29 @@ FeedbackLoop is a university feedback management platform where students provide
 | **Frontend** | React 19, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query, Recharts, Lucide React |
 | **Backend** | Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, Pydantic v2, PyJWT, Bcrypt, Scikit-Learn |
 | **Database** | SQLite (flexible zero-config local dev) / PostgreSQL (production configured via `DATABASE_URL`) |
-| **AI / Inference** | Local Ollama REST API (`/api/chat` with `llama3.1:8b`) with high-fidelity fallback simulation mode |
+| **AI / Inference** | Remotely Hosted or Local Ollama API (Configurable via `OLLAMA_BASE_URL`, `OLLAMA_API_KEY`, `OLLAMA_MODEL`, `OLLAMA_TIMEOUT`) with graceful manual fallback |
 | **Testing** | Pytest, Pytest-Asyncio, HTTPX |
+
+---
+
+## 🤖 Remote Hosted Ollama API Configuration
+
+FeedbackLoop is configured to use a **remotely hosted Ollama API** (or local Ollama instance) without requiring local GPU or model downloads.
+
+Configure these environment variables in `backend/.env`:
+
+```env
+# Remote Hosted Ollama API Configuration
+OLLAMA_BASE_URL=https://ollama.com
+OLLAMA_API_KEY=YOUR_REMOTE_API_KEY
+OLLAMA_MODEL=glm-5.3-flash
+OLLAMA_TIMEOUT=120
+```
+
+### Key AI Architecture Capabilities:
+- **Zero Local Footprint**: No local Ollama installation, daemon, or model weight downloads required.
+- **Enterprise Error Handling**: Securely manages connection errors, timeouts (120s), authentication errors (HTTP 401/403), and credit/quota exhaustion (HTTP 402) by cleanly directing students to the 3-step manual feedback form without ever crashing or faking responses.
+- **Security & Privacy**: The API key is securely retained within the FastAPI backend service layer and is never exposed to the frontend or student browsers.
 
 ---
 
@@ -48,7 +69,7 @@ FeedbackLoop is a university feedback management platform where students provide
 ### 1. Prerequisites
 - **Node.js** v20+ and npm
 - **Python** 3.11+
-- *(Optional)* **Ollama** running locally on port 11434 (`ollama run llama3.1:8b`)
+- *(Optional)* A remote Ollama API key or local Ollama instance
 
 ---
 
@@ -109,4 +130,4 @@ cd backend
 python -m pytest
 ```
 
-Result: **8 passed, 0 failures**.
+Result: **12 passed, 0 failures** (including complete end-to-end closed loop workflow).

@@ -372,18 +372,19 @@ def seed():
 
     print("Seeding Student Resolution Verifications (Impact Measurement)...")
     verification_votes = [
-        (students[0].id, VerificationOutcome.YES, "The visual recursion tree diagrams made the call stack completely click for me!"),
-        (students[1].id, VerificationOutcome.YES, "Much better understanding now. The step-by-step example was exactly what I needed."),
-        (students[2].id, VerificationOutcome.PARTIALLY, "Helped with single recursion, still finding binary tree recursion tricky."),
-        (students[3].id, VerificationOutcome.YES, "Great tutorial. Thank you for addressing our feedback so fast!"),
-        (students[4].id, VerificationOutcome.PARTIALLY, "Better than before, homework is still challenging."),
-        (students[5].id, VerificationOutcome.YES, "The live tracing made a huge difference.")
+        (students[0].id, VerificationOutcome.YES, 5, "The visual recursion tree diagrams made the call stack completely click for me!"),
+        (students[1].id, VerificationOutcome.YES, 4, "Much better understanding now. The step-by-step example was exactly what I needed."),
+        (students[2].id, VerificationOutcome.PARTIALLY, 3, "Helped with single recursion, still finding binary tree recursion tricky."),
+        (students[3].id, VerificationOutcome.YES, 5, "Great tutorial. Thank you for addressing our feedback so fast!"),
+        (students[4].id, VerificationOutcome.PARTIALLY, 3, "Better than before, homework is still challenging."),
+        (students[5].id, VerificationOutcome.YES, 4, "The live tracing made a huge difference.")
     ]
-    for s_id, outcome, comment in verification_votes:
+    for s_id, outcome, rating, comment in verification_votes:
         vote = ResolutionVerification(
             action_id=action.id,
             student_id_hash=hash_student_vote(s_id, action.id),
             outcome=outcome,
+            updated_understanding_rating=rating,
             comment=comment,
             created_at=now - timedelta(days=1)
         )

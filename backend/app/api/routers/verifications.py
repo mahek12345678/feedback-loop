@@ -51,6 +51,7 @@ def submit_verification(
         action_id=action.id,
         student_id_hash=student_hash,
         outcome=req.outcome,
+        updated_understanding_rating=req.updated_understanding_rating,
         comment=req.comment
     )
     db.add(vote)
@@ -102,6 +103,9 @@ def get_action_verification_summary(
     if total_votes > 0:
         effectiveness = round(((yes_count + 0.5 * partially_count) / total_votes) * 100, 1)
 
+    ratings = [v.updated_understanding_rating for v in votes if v.updated_understanding_rating is not None]
+    avg_rating = round(sum(ratings) / len(ratings), 1) if ratings else None
+
     comments = [v.comment for v in votes if v.comment]
 
     return VerificationSummaryResponse(
@@ -111,5 +115,6 @@ def get_action_verification_summary(
         partially_count=partially_count,
         no_count=no_count,
         effectiveness_score=effectiveness,
+        avg_updated_understanding=avg_rating,
         comments=comments
     )

@@ -248,6 +248,7 @@ class FacultyActionResponse(BaseModel):
 class VerificationSubmitRequest(BaseModel):
     action_id: int
     outcome: VerificationOutcome
+    updated_understanding_rating: Optional[int] = Field(None, ge=1, le=5)
     comment: Optional[str] = None
 
 class VerificationSummaryResponse(BaseModel):
@@ -257,6 +258,7 @@ class VerificationSummaryResponse(BaseModel):
     partially_count: int
     no_count: int
     effectiveness_score: float # % positive/partially positive
+    avg_updated_understanding: Optional[float] = None
     comments: List[str] = []
 
 # --- ANALYTICS SCHEMAS ---

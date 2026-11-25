@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     # Database - Anchored to backend/feedbackloop.db
     DATABASE_URL: str = f"sqlite:///{DEFAULT_DB_FILE}"
     
-    # Ollama Cloud / API Configuration
+    # Remote Hosted Ollama API Configuration
     OLLAMA_BASE_URL: str = "https://ollama.com"
     OLLAMA_MODEL: str = "glm-5.3-flash"
     OLLAMA_TIMEOUT: int = 120

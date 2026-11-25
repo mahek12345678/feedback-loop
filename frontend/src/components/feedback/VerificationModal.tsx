@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { verificationsApi } from '../../api/services';
 import { useToast } from '../../context/ToastContext';
 import { VerificationOutcome } from '../../types';
-import { CheckCircle2, HelpCircle, XCircle, X } from 'lucide-react';
+import { CheckCircle2, HelpCircle, XCircle, X, Star } from 'lucide-react';
 
 interface VerificationModalProps {
   actionId: number;
@@ -21,6 +21,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
 }) => {
   const { addToast } = useToast();
   const [outcome, setOutcome] = useState<VerificationOutcome>('YES');
+  const [updatedRating, setUpdatedRating] = useState<number>(4);
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,9 +32,10 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
       await verificationsApi.submit({
         action_id: actionId,
         outcome,
+        updated_understanding_rating: updatedRating,
         comment: comment.trim() || undefined,
       });
-      addToast('success', 'Verification Recorded!', 'Thank you! Your feedback closes the loop and evaluates the intervention.');
+      addToast('success', 'Verification Recorded!', 'Thank you! Your evaluation closes the feedback loop.');
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -44,102 +46,139 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-elevated border border-surface-border max-w-lg w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        <div className="p-6 border-b border-surface-border flex items-center justify-between">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-elevated border border-[#E1E8F0] max-w-lg w-full overflow-hidden">
+        <div className="p-4 px-6 border-b border-[#E1E8F0] bg-[#F5F8FC] flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-ink">Verify Academic Resolution</h3>
-            <p className="text-xs text-ink-muted mt-0.5">
-              Closed Loop Impact Measurement &bull; <span className="font-semibold text-lavender-700">{topic}</span>
+            <h3 className="text-base font-bold text-[#203247]">Verify Academic Resolution</h3>
+            <p className="text-xs text-[#718096]">
+              Closed-Loop Impact Measurement &bull; <span className="font-semibold text-[#1769AA]">{topic}</span>
             </p>
           </div>
-          <button onClick={onClose} className="p-2 text-ink-muted hover:text-ink rounded-full transition-colors">
-            <X className="w-5 h-5" />
+          <button onClick={onClose} className="p-1.5 text-[#718096] hover:text-[#203247] rounded transition-colors">
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="p-4 rounded-2xl bg-lavender-50 border border-lavender-200">
-            <p className="text-xs font-semibold text-lavender-800 uppercase tracking-wider mb-1">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="p-3.5 rounded-lg bg-[#EAF4FC] border border-[#CBD5E1]">
+            <p className="text-[11px] font-bold text-[#0F4C81] uppercase tracking-wider mb-1">
               Implemented Faculty Action:
             </p>
-            <p className="text-sm font-bold text-ink">{actionTitle}</p>
-            <p className="text-xs text-ink-muted mt-1">
+            <p className="text-xs font-bold text-[#203247]">{actionTitle}</p>
+            <p className="text-xs text-[#718096] mt-1">
               Did this instructional action effectively improve your comprehension of {topic}?
             </p>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-2">
-              Resolution Assessment
+            <label className="block text-xs font-semibold text-[#203247] mb-2">
+              Did the intervention help your understanding?
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2.5">
               <button
                 type="button"
-                onClick={() => setOutcome('YES')}
-                className={`p-3 rounded-2xl border text-center transition-all ${
+                onClick={() => {
+                  setOutcome('YES');
+                  if (updatedRating < 4) setUpdatedRating(4);
+                }}
+                className={`p-3 rounded-lg border text-center transition-all ${
                   outcome === 'YES'
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800 font-bold shadow-subtle'
-                    : 'border-surface-border hover:bg-surface-subtle text-ink-muted'
+                    ? 'border-[#28A879] bg-emerald-50 text-emerald-900 font-bold shadow-sm'
+                    : 'border-[#E1E8F0] hover:bg-[#F5F8FC] text-[#718096]'
                 }`}
               >
-                <CheckCircle2 className={`w-6 h-6 mx-auto mb-1 ${outcome === 'YES' ? 'text-emerald-600' : 'text-gray-400'}`} />
+                <CheckCircle2 className={`w-5 h-5 mx-auto mb-1 ${outcome === 'YES' ? 'text-[#28A879]' : 'text-slate-400'}`} />
                 <span className="text-xs block">Yes, Resolved</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setOutcome('PARTIALLY')}
-                className={`p-3 rounded-2xl border text-center transition-all ${
+                onClick={() => {
+                  setOutcome('PARTIALLY');
+                  setUpdatedRating(3);
+                }}
+                className={`p-3 rounded-lg border text-center transition-all ${
                   outcome === 'PARTIALLY'
-                    ? 'border-amber-500 bg-amber-50 text-amber-800 font-bold shadow-subtle'
-                    : 'border-surface-border hover:bg-surface-subtle text-ink-muted'
+                    ? 'border-[#E7A33E] bg-amber-50 text-amber-900 font-bold shadow-sm'
+                    : 'border-[#E1E8F0] hover:bg-[#F5F8FC] text-[#718096]'
                 }`}
               >
-                <HelpCircle className={`w-6 h-6 mx-auto mb-1 ${outcome === 'PARTIALLY' ? 'text-amber-600' : 'text-gray-400'}`} />
+                <HelpCircle className={`w-5 h-5 mx-auto mb-1 ${outcome === 'PARTIALLY' ? 'text-[#E7A33E]' : 'text-slate-400'}`} />
                 <span className="text-xs block">Partially Helped</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setOutcome('NO')}
-                className={`p-3 rounded-2xl border text-center transition-all ${
+                onClick={() => {
+                  setOutcome('NO');
+                  if (updatedRating > 2) setUpdatedRating(2);
+                }}
+                className={`p-3 rounded-lg border text-center transition-all ${
                   outcome === 'NO'
-                    ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold shadow-subtle'
-                    : 'border-surface-border hover:bg-surface-subtle text-ink-muted'
+                    ? 'border-[#D95763] bg-red-50 text-red-900 font-bold shadow-sm'
+                    : 'border-[#E1E8F0] hover:bg-[#F5F8FC] text-[#718096]'
                 }`}
               >
-                <XCircle className={`w-6 h-6 mx-auto mb-1 ${outcome === 'NO' ? 'text-rose-600' : 'text-gray-400'}`} />
-                <span className="text-xs block">Still Unclear</span>
+                <XCircle className={`w-5 h-5 mx-auto mb-1 ${outcome === 'NO' ? 'text-[#D95763]' : 'text-slate-400'}`} />
+                <span className="text-xs block">No, Still Unclear</span>
               </button>
             </div>
           </div>
 
+          {/* Updated Understanding Rating (1-5) */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-2">
-              Anonymous Feedback on the Resolution (Optional)
+            <label className="block text-xs font-semibold text-[#203247] mb-1">
+              Updated Understanding Rating (After Intervention)
+            </label>
+            <div className="flex items-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  onClick={() => setUpdatedRating(star)}
+                  className="p-1 transition-transform hover:scale-110"
+                >
+                  <Star
+                    className={`w-6 h-6 ${
+                      updatedRating >= star
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-slate-300 fill-transparent'
+                    }`}
+                  />
+                </button>
+              ))}
+              <span className="text-xs font-medium text-[#718096] ml-2">
+                {updatedRating} / 5 stars
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-[#203247] mb-1">
+              Optional Student Comments
             </label>
             <textarea
               rows={3}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="e.g. 'The worked recursion examples made it click!' or 'Still struggling with homework problem 3.'"
-              className="w-full px-4 py-2.5 rounded-xl border border-surface-border text-sm focus:outline-none focus:ring-2 focus:ring-lavender-400"
+              placeholder="e.g., The extra live tracing helped, but I'd still like more sample questions..."
+              className="w-full p-2.5 text-xs border border-[#E1E8F0] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1769AA] text-[#203247]"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E1E8F0]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-ink-muted hover:text-ink transition-colors"
+              className="px-3.5 py-1.5 rounded-lg border border-[#E1E8F0] text-xs font-medium text-[#718096] hover:text-[#203247]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-xl bg-lavender-600 hover:bg-lavender-700 text-white text-sm font-semibold shadow-md shadow-lavender-200 transition-colors"
+              className="px-4 py-1.5 rounded-lg bg-[#1769AA] hover:bg-[#12578D] text-white text-xs font-semibold transition-colors disabled:opacity-50"
             >
               {isSubmitting ? 'Recording...' : 'Submit Anonymous Verification'}
             </button>
